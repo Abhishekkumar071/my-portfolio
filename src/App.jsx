@@ -1,120 +1,98 @@
-import React from 'react'
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion";
 
 import {
-  GitBranch, CircleUser, Mail, MapPin, ExternalLink, Code2, Database,
+  GitBranch, CircleUser, Mail, MapPin, Code2,
   Brain, Wrench, Terminal, ChevronDown, Download, Menu, X,
-  Trophy, Star, Zap, Layers, Server, Globe, BookOpen, Award
+  Trophy, Star, Zap, Server, BookOpen, Award
 } from "lucide-react";
 
-// ─── DATA ────────────────────────────────────────────────────────────────────
+// Portfolio facts are kept together so resume updates stay consistent across sections.
 const DATA = {
   name: "Abhishek Kumar",
-  title: "Software Engineer",
-  subtitle: "Full Stack Java Developer · AI & ML Specialist",
-  location: "Greater Noida, UP",
-  email: "aksingh1230@gmail.com",
+  title: "Backend Engineer",
+  subtitle: "Java · Spring Boot · AI systems",
+  summary: "Computer Science undergraduate focused on dependable backends and useful AI applications. I build secure REST APIs, transaction-aware services, and LLM workflows with structured outputs, retrieval, and tests.",
+  location: "Greater Noida, India",
+  email: "aksinghbgp1230@gmail.com",
   links: {
     linkedin: "https://www.linkedin.com/in/abhishek-kumar-416134301/",
     github: "https://github.com/Abhishekkumar071",
-    leetcode: "https://leetcode.com/u/Abhishek_670/",
+    leetcode: "https://leetcode.com/u/Abhishek670/",
     codeforces: "https://codeforces.com/profile/abhishek_670",
-    gfg: "https://www.geeksforgeeks.org/profile/abhishek670",
   },
   stats: [
-    { label: "LeetCode Rating", value: "1758", sub: "Top 9.68% Global", color: "#f59e0b", icon: "trophy" },
-    { label: "Problems Solved", value: "1000+", sub: "LeetCode · GFG · CF", color: "#22d3ee", icon: "zap" },
-    { label: "Codeforces", value: "1173", sub: "Max Rating", color: "#a78bfa", icon: "star" },
-    { label: "CGPA", value: "8.82", sub: "NIET · B.Tech CSE", color: "#34d399", icon: "award" },
+    { label: "LeetCode Rating", value: "1,758", sub: "Top 9.68% globally", color: "#f59e0b", icon: "trophy" },
+    { label: "Problems Solved", value: "1,000+", sub: "Across DSA platforms", color: "#22d3ee", icon: "zap" },
+    { label: "Codeforces", value: "1,494", sub: "Specialist · max rating", color: "#a78bfa", icon: "star" },
+    { label: "CGPA", value: "8.9", sub: "CSE (AI & ML) · NIET", color: "#34d399", icon: "award" },
   ],
   projects: [
     {
-      title: "InsurAI",
-      org: "Infosys Internship",
-      desc: "Scalable insurance management platform with Role-Based Access Control and RESTful APIs. Built enterprise-grade authentication with JWT and robust MySQL schema design.",
-      tech: ["Spring Boot", "MySQL", "JWT", "React", "RBAC"],
-      github: "https://github.com/Abhishekkumar071/InsurAI",
+      title: "TalentPilot",
+      org: "AI recruitment · Featured",
+      desc: "An agentic hiring flow from role request to offer, with HR approval at key decisions. It combines checkpointed LangGraph runs, anonymized hybrid resume screening, policy-grounded RAG, and an offline fake-LLM test mode.",
+      tech: ["Python", "FastAPI", "LangGraph", "Pydantic", "React", "PostgreSQL", "MediaPipe"],
+      github: "https://github.com/Abhishekkumar071/TalentPilot",
       accent: "#22d3ee",
-      image: "/InsurAI.png" // <-- YE NAYI LINE ADD KI HAI
+      image: "/TilentPilot.jpg",
     },
     {
-      title: "Secure Bank & Payment System",
-      org: "Core Java Project",
-      desc: "Atomic fund transfers with ACID transaction guarantees. Bcrypt password hashing and concurrency control prevent race conditions and unauthorized access.",
-      tech: ["Java", "Spring Boot", "ACID", "Bcrypt", "Concurrency"],
-      github: "https://github.com/Abhishekkumar071/Secure-Bank-management-and-payment-processing-System",
+      title: "ChatLens",
+      org: "Chat analytics · Data product",
+      desc: "Parses WhatsApp and Telegram exports into interactive NLP and activity dashboards, handling varied date formats and malformed input. Caching keeps 50K+ message datasets responsive; pytest and GitHub Actions automate checks and delivery.",
+      tech: ["Python", "Pandas", "NLTK", "Streamlit", "Docker", "Pytest"],
+      github: "https://github.com/Abhishekkumar071",
+      githubLabel: "GitHub profile",
       accent: "#34d399",
-      image: "/bank_management.png"
     },
     {
       title: "Document Q&A Engine",
-      org: "RAG Architecture",
-      desc: "Eliminated LLM hallucinations for technical manuals using semantic search and vector databases. RAG pipeline retrieves grounded context before generation.",
-      tech: ["Python", "LangChain", "Vector DB", "RAG", "NLP"],
+      org: "Retrieval-augmented generation",
+      desc: "A document question-answering app that combines PDF ingestion, chunking, Hugging Face embeddings, ChromaDB retrieval, and Groq-hosted Llama 3.3. FastAPI and SQLAlchemy support chat history across sessions.",
+      tech: ["Python", "FastAPI", "LangChain", "ChromaDB", "Groq"],
       github: "https://github.com/Abhishekkumar071/document-qa-engine",
-      accent: "#a78bfa",
-      image: "/doc_qa.png"
-    },
-    {
-      title: "MoodVision",
-      org: "Computer Vision · FER2013",
-      desc: "Real-time facial emotion classification achieving 75% peak accuracy on FER2013 dataset. Convolutional neural network trained from scratch with OpenCV live inference.",
-      tech: ["Python", "CNNs", "OpenCV", "TensorFlow", "FER2013"],
-      github: "https://github.com/Abhishekkumar071/MoodVision",
       accent: "#f59e0b",
-      image: "/moodVission.png"
+      image: "/doc_qa.png",
     },
-    // 👇 NAYA PROJECT YAHAN ADD KARO 👇
     {
-      title: "Mera Naya Chatbot",
-      org: "Personal Project",
-      desc: "Ye mera naya AI based project hai jo main add karna chahta tha.",
-      tech: ["Python", "OpenAI API", "React"],
-      github: "https://github.com/Abhishekkumar071/mera-bot",
-      accent: "#f43f5e", // Naya color (Pink/Red type)
-      image: "/bot.jpg"  // Naye project ki photo
+      title: "InsurAI",
+      org: "Infosys Springboard · Internship project",
+      desc: "A full-stack insurance platform for policies, applications, and customer workflows. Built 50+ REST APIs with JWT and RBAC, plus an AI support chatbot and personalized policy recommendations.",
+      tech: ["Java", "Spring Boot", "MySQL", "React", "JWT", "JUnit 5"],
+      github: "https://github.com/Abhishekkumar071/InsurAI",
+      accent: "#a78bfa",
+      image: "/InsurAI.png",
+    },
+    {
+      title: "Secure Bank & Payment System",
+      org: "Backend engineering",
+      desc: "A payment-focused banking backend built around safe fund transfers, ACID transactions, and idempotent requests so retries do not charge twice. Also addresses Hibernate N+1 queries with JOIN FETCH.",
+      tech: ["Java", "Spring Boot", "PostgreSQL", "Transactions", "Idempotency"],
+      github: "https://github.com/Abhishekkumar071/Secure-Bank-management-and-payment-processing-System",
+      accent: "#fb7185",
+      image: "/bank_management.png",
     },
   ],
   skills: [
-    {
-      category: "Languages",
-      icon: "code",
-      items: ["Java", "Python", "SQL", "C"],
-      color: "#22d3ee",
-    },
-    {
-      category: "Backend & Databases",
-      icon: "server",
-      items: ["Spring Boot", "REST APIs", "Microservices", "MySQL", "MongoDB", "PostgreSQL"],
-      color: "#34d399",
-    },
-    {
-      category: "AI / ML",
-      icon: "brain",
-      items: ["Generative AI", "RAG", "LangChain", "NLP", "CNNs", "Vector DB"],
-      color: "#a78bfa",
-    },
-    {
-      category: "Tools & DevOps",
-      icon: "wrench",
-      items: ["Git", "GitHub", "Postman", "JWT", "Docker"],
-      color: "#f59e0b",
-    },
+    { category: "Languages", icon: "code", items: ["Java", "Python", "SQL", "C"], color: "#22d3ee" },
+    { category: "Backend & Testing", icon: "server", items: ["Spring Boot", "FastAPI", "REST APIs", "JWT", "Pytest", "JUnit 5", "Mockito", "Postman"], color: "#34d399" },
+    { category: "AI & LLMs", icon: "brain", items: ["LangChain", "LangGraph", "RAG", "Pydantic", "ChromaDB", "NLP"], color: "#f59e0b" },
+    { category: "Data, Cloud & Tools", icon: "wrench", items: ["PostgreSQL", "MySQL", "MongoDB", "Pandas", "NLTK", "Docker", "GitHub Actions", "AWS EC2 / S3", "Streamlit"], color: "#a78bfa" },
   ],
   timeline: [
     {
-      year: "2021 - Present",
-      title: "B.Tech Computer Science & Engineering",
-      org: "NIET · Greater Noida",
-      detail: "CGPA: 8.82 · Specialization in AI & ML",
+      year: "2023 – 2027",
+      title: "B.Tech, Computer Science & Engineering (AI & ML)",
+      org: "Noida Institute of Engineering and Technology · Greater Noida",
+      detail: "CGPA: 8.9",
       type: "edu",
     },
     {
-      year: "2024",
-      title: "Software Engineer Intern",
-      org: "Infosys · Springboard Program",
-      detail: "Built InsurAI - enterprise insurance management platform with Spring Boot, JWT auth & React frontend.",
+      year: "Oct – Dec 2025",
+      title: "Java Full Stack Developer Intern",
+      org: "Infosys Springboard Virtual Internship 6.0",
+      detail: "Built InsurAI with Spring Boot, MySQL, and React; developed 50+ JWT/RBAC-secured APIs, added backend tests, and deployed the backend to AWS EC2 and frontend to S3.",
       type: "work",
     },
   ],
@@ -184,7 +162,7 @@ const Reveal = ({ children, delay = 0, y = 30 }) => {
 };
 
 // ─── NAVBAR ───────────────────────────────────────────────────────────────────
-const NAV = ["About", "Stats", "Projects", "Skills", "Experience", "Contact"];
+const NAV = ["About", "Stats", "Approach", "Projects", "Skills", "Experience", "Contact"];
 
 function Navbar() {
   const [open, setOpen] = useState(false);
@@ -271,7 +249,7 @@ function Hero() {
             >
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(34,211,238,0.08)", border: "1px solid rgba(34,211,238,0.2)", borderRadius: 999, padding: "6px 14px", marginBottom: 24 }}>
                 <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#22d3ee", boxShadow: "0 0 8px #22d3ee" }} />
-                <span style={{ color: "#22d3ee", fontSize: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: 1 }}>AVAILABLE FOR OPPORTUNITIES</span>
+                <span style={{ color: "#22d3ee", fontSize: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: 1 }}>OPEN TO SDE INTERNSHIPS</span>
               </div>
               <h1 style={{ fontSize: "clamp(2.8rem,6vw,5rem)", fontFamily: "'Space Grotesk', 'Sora', sans-serif", fontWeight: 800, lineHeight: 1.05, color: "#fff", margin: "0 0 8px" }}>
                 {DATA.name}
@@ -282,14 +260,17 @@ function Hero() {
               <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, fontFamily: "'JetBrains Mono', monospace", margin: "0 0 24px", letterSpacing: 0.5 }}>
                 {DATA.subtitle}
               </p>
+              <p style={{ color: "rgba(255,255,255,0.72)", fontSize: 16, lineHeight: 1.8, maxWidth: 650, margin: "0 0 24px" }}>
+                {DATA.summary}
+              </p>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 32, color: "rgba(255,255,255,0.4)", fontSize: 13 }}>
                 <MapPin size={14} /> <span>{DATA.location}</span>
               </div>
               {/* Highlight banner */}
               <div style={{ background: "linear-gradient(135deg, rgba(34,211,238,0.08), rgba(167,139,250,0.08))", border: "1px solid rgba(34,211,238,0.15)", borderRadius: 12, padding: "14px 20px", marginBottom: 36, display: "inline-flex", alignItems: "center", gap: 12 }}>
                 <Trophy size={20} color="#f59e0b" />
-                <span style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>1000+ Problems Solved</span>
-                <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 13 }}>· LeetCode Top 9.68% · Rating 1758</span>
+                <span style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>1,000+ Problems Solved</span>
+                <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 13 }}>· LeetCode 1,758 · Top 9.68%</span>
               </div>
               {/* CTA Buttons */}
               <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
@@ -357,7 +338,7 @@ function Hero() {
             {/* Floating badge (Pehle jaisa hi hai) */}
             <motion.div animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
               style={{ position: "absolute", bottom: -10, right: -10, background: "rgba(5,8,15,0.9)", border: "1px solid rgba(34,211,238,0.3)", borderRadius: 10, padding: "8px 14px", whiteSpace: "nowrap" }}>
-              <span style={{ color: "#22d3ee", fontSize: 12, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700 }}>1758 ⚡ LeetCode</span>
+                  <span style={{ color: "#22d3ee", fontSize: 12, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700 }}>1,758 · LeetCode</span>
             </motion.div>
 
           </motion.div>
@@ -415,7 +396,7 @@ function Stats() {
     <section id="stats" style={{ padding: "80px 24px", position: "relative" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <Reveal>
-          <SectionTitle label="COMPETITIVE PROGRAMMING" title="Coding Stats" />
+          <SectionTitle label="PROOF, NOT JUST CLAIMS" title="Numbers & milestones" />
         </Reveal>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20, marginTop: 40 }}>
           {DATA.stats.map((s, i) => (
@@ -446,6 +427,66 @@ function Stats() {
             ))}
           </div>
         </Reveal>
+        <Reveal delay={0.4}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16, marginTop: 32 }}>
+            <div style={{ borderLeft: "2px solid #f59e0b", padding: "4px 0 4px 16px" }}>
+              <div style={{ color: "#f59e0b", fontSize: 11, fontFamily: "'JetBrains Mono', monospace", marginBottom: 6 }}>GLOBAL PRELIMS · 2026</div>
+              <div style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>IICPC CodeFest · rank 3,545 of 13,000+</div>
+            </div>
+            <div style={{ borderLeft: "2px solid #22d3ee", padding: "4px 0 4px 16px" }}>
+              <div style={{ color: "#22d3ee", fontSize: 11, fontFamily: "'JetBrains Mono', monospace", marginBottom: 6 }}>LEADERSHIP & COMMUNITY</div>
+              <div style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>IEEE Membership Chair · NEST For Coders top 29</div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ─── ENGINEERING APPROACH ─────────────────────────────────────────────────────
+function Approach() {
+  const principles = [
+    {
+      number: "01",
+      title: "Retries should be safe",
+      detail: "Idempotency and database constraints keep a repeated payment request from charging twice.",
+      source: "SECURE BANK SYSTEM",
+      color: "#34d399",
+    },
+    {
+      number: "02",
+      title: "Model output needs a contract",
+      detail: "Pydantic validation, provider fallback, and fake-LLM tests make AI workflows more dependable.",
+      source: "TALENTPILOT",
+      color: "#f59e0b",
+    },
+    {
+      number: "03",
+      title: "Long workflows must recover",
+      detail: "Checkpointed LangGraph runs persist in PostgreSQL, resume after restarts, and retry failed steps.",
+      source: "TALENTPILOT",
+      color: "#22d3ee",
+    },
+  ];
+
+  return (
+    <section id="approach" style={{ padding: "64px 24px 80px", position: "relative" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <Reveal>
+          <SectionTitle label="THE DETAILS THAT MATTER" title="Reliable is a feature." />
+        </Reveal>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 0, marginTop: 36 }}>
+          {principles.map((item, index) => (
+            <Reveal key={item.number} delay={index * 0.1}>
+              <div style={{ minHeight: 196, padding: "20px 24px 12px 0", marginRight: 24, borderTop: `2px solid ${item.color}80` }}>
+                <div style={{ color: item.color, font: "700 12px 'JetBrains Mono', monospace", marginBottom: 18 }}>{item.number} / {item.source}</div>
+                <h3 style={{ color: "#fff", fontSize: 18, margin: "0 0 10px", lineHeight: 1.3 }}>{item.title}</h3>
+                <p style={{ color: "rgba(255,255,255,0.52)", fontSize: 14, lineHeight: 1.7, margin: 0 }}>{item.detail}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -473,15 +514,17 @@ function Projects() {
                 </div>
                  */}
                 {/* 👇 YAHAN CHANGE KIYA HAI (Placeholder hata kar Image lagayi hai) 👇 */}
-                <div style={{ width: "100%", height: 160, borderRadius: 10, marginBottom: 20, overflow: "hidden", border: `1px solid ${p.accent}30` }}>
-                  <img 
-                    src={p.image} 
-                    alt={p.title} 
-                    style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s ease" }} 
-                    onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.05)"}
-                    onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
-                  />
-                </div>
+                {p.image ? (
+                  <div style={{ width: "100%", height: 160, borderRadius: 10, marginBottom: 20, overflow: "hidden", border: `1px solid ${p.accent}30` }}>
+                    <img src={p.image} alt={`${p.title} project`} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s ease" }}
+                      onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+                      onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"} />
+                  </div>
+                ) : (
+                  <div style={{ width: "100%", height: 160, borderRadius: 10, marginBottom: 20, border: `1px solid ${p.accent}30`, background: `linear-gradient(135deg, ${p.accent}18, rgba(5,8,15,0.9))`, display: "flex", alignItems: "flex-end", padding: 20 }}>
+                    <span style={{ color: p.accent, font: "700 13px 'JetBrains Mono', monospace", letterSpacing: 1 }}>CHAT DATA / 50K+ MESSAGES</span>
+                  </div>
+                )}
                 {/* 👆 YAHAN TAK 👆 */}
 
                 <div style={{ fontSize: 11, color: p.accent, fontFamily: "'JetBrains Mono', monospace", letterSpacing: 1, marginBottom: 8 }}>{p.org.toUpperCase()}</div>
@@ -497,12 +540,16 @@ function Projects() {
                 <div style={{ display: "flex", gap: 12 }}>
                   <motion.a href={p.github} target="_blank" rel="noreferrer" whileHover={{ scale: 1.05 }}
                     style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,0.6)", fontSize: 13, textDecoration: "none", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 7, padding: "7px 14px" }}>
-                    <GitBranch size={14} /> Code
+                    <GitBranch size={14} /> {p.githubLabel || "Code"}
                   </motion.a>
                 </div>
               </motion.div>
             </Reveal>
           ))}
+        </div>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", marginTop: 32, paddingTop: 18, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "baseline" }}>
+          <span style={{ color: "#22d3ee", font: "700 11px 'JetBrains Mono', monospace", marginRight: 8 }}>CURRENTLY EXPLORING</span>
+          <span style={{ color: "rgba(255,255,255,0.58)", fontSize: 13 }}>System design · Distributed systems · Kubernetes</span>
         </div>
       </div>
     </section>
@@ -627,7 +674,7 @@ function Contact() {
         </Reveal>
         <Reveal delay={0.15}>
           <p style={{ color: "rgba(255,255,255,0.45)", textAlign: "center", fontSize: 14, margin: "12px 0 40px", lineHeight: 1.7 }}>
-            Open to full-time roles, internships, and exciting projects. Let's build something impactful together.
+            Looking for an SDE internship where I can contribute to backend systems, learn from a strong engineering team, and ship useful software.
           </p>
         </Reveal>
         <Reveal delay={0.2}>
@@ -700,6 +747,7 @@ export default function App() {
       <main style={{ position: "relative", zIndex: 1 }}>
         <Hero />
         <Stats />
+        <Approach />
         <Projects />
         <Skills />
         <Experience />
